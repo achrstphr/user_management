@@ -17,14 +17,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_param("ssss", $name, $email, $hashed_password, $created_at);
 
         if ($stmt->execute()) {
-            echo "Registration successful.";
             header("Location: login.php?message=Registration Successful&status=success");
             exit();
         } else {
             echo "Error: " . $stmt->error;
         }
     } else {
-        echo "Passwords do not match.";
+        header("Location: register.php?message=Password did not match&status=danger");
+        exit();
     }
 }
 ?>
@@ -39,8 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </head>
 <body>
 <div class="container">
-    <?php if (isset($_GET['message'])): ?>
-        <p><?php echo htmlspecialchars($_GET['message']); ?></p>
+    <?php if (isset($_GET['message'])): ?>  
+        <div id="success-alert" class="alert alert-<?php echo htmlspecialchars($_GET['status']); ?> d-flex align-items-center justify-content-center mt-5" role="alert">
+            <p class="text-center mb-0"><?php echo htmlspecialchars($_GET['message']); ?></p>
+        </div>
     <?php endif; ?>
     <h2 class="mt-5">Register</h2>
     <form method="POST" action="">
@@ -75,5 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script>
+    $(document).ready(function() {
+        setTimeout(function() {
+            $("#success-alert").alert('close');
+        }, 3000); // 3000 milliseconds = 3 seconds
+    });
+</script>
 </body>
 </html>
